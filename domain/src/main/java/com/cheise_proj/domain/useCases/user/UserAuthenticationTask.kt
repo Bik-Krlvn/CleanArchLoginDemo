@@ -9,6 +9,16 @@ import io.reactivex.Observable
 import io.reactivex.Scheduler
 import javax.inject.Inject
 
+/**
+ * Build user case Authentication Task
+ *
+ * @property userRepository
+ * @constructor
+ * Dependencies
+ *
+ * @param backgroundScheduler
+ * @param foregroundScheduler
+ */
 class UserAuthenticationTask @Inject constructor(
     private val userRepository: UserRepository,
     @Background backgroundScheduler: Scheduler,
@@ -17,10 +27,23 @@ class UserAuthenticationTask @Inject constructor(
     backgroundScheduler,
     foregroundScheduler
 ) {
+    /**
+     * Return userEntity observable wrapper
+     *
+     * @param input type Auth Params for method execution
+     * @return userEntity observable wrapper
+     * @throws IllegalArgumentException
+     */
     override fun generateObservable(input: AuthParams?): Observable<UserEntity> {
         requireNotNull(input) { "auth params can't be null" }
         return userRepository.authenticateUser(input.username, input.password)
     }
 
+    /**
+     * Auth Param input
+     *
+     * @property username user input username string
+     * @property password user input password string
+     */
     data class AuthParams(val username: String, val password: String)
 }

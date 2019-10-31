@@ -5,12 +5,15 @@ import com.cheise_proj.presentation.mapper.base.Mapper
 import com.cheise_proj.presentation.model.User
 
 /**
- * User Entity Mapper
+ * User Entity Mapper, responsible of mapping presentation user model to domain
+ *
  * @property UserEntityMapper
  * @author Kelvin Birikorang
  */
 class UserEntityMapper : Mapper<UserEntity, User> {
     /**
+     * Maps presentation module user model to domain
+     *
      * @param e provide user model
      * @return UserEntity maps user to userEntity model
      */
@@ -24,6 +27,8 @@ class UserEntityMapper : Mapper<UserEntity, User> {
     }
 
     /**
+     * Maps userEntity to presentation user model
+     *
      * @param t provide userEntity model
      * @return User maps userEntity to user model
      */

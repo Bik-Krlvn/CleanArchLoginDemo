@@ -8,6 +8,16 @@ import io.reactivex.Completable
 import io.reactivex.Scheduler
 import javax.inject.Inject
 
+/**
+ * Build use case user Change password
+ *
+ * @property userRepository
+ * @constructor
+ * Dependencies
+ *
+ * @param backgroundScheduler
+ * @param foregroundScheduler
+ */
 class UserChangePasswordTask @Inject constructor(
     private val userRepository: UserRepository,
     @Background backgroundScheduler: Scheduler,
@@ -16,10 +26,24 @@ class UserChangePasswordTask @Inject constructor(
     backgroundScheduler,
     foregroundScheduler
 ) {
+    /**
+     * Return Completable
+     *
+     * @param input type ChangePasswordParams object
+     * @return completable
+     * @throws IllegalArgumentException
+     */
     override fun generateCompletable(input: ChangePasswordParams?): Completable {
         requireNotNull(input) { "change password params can't be null" }
         return userRepository.updateUserPassword(input.identifier, input.oldPass, input.newPass)
     }
 
+    /**
+     * Change Password Params
+     *
+     * @property identifier
+     * @property oldPass
+     * @property newPass
+     */
     data class ChangePasswordParams(val identifier: Int, val oldPass: String, val newPass: String)
 }

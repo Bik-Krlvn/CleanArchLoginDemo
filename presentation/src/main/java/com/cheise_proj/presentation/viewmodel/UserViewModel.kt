@@ -17,14 +17,14 @@ import io.reactivex.functions.Function
 import javax.inject.Inject
 
 /**
- * User View Model
+ * User View Model, responsible for user view related ui
+ *
  * @author Kelvin Birikorang
- * @property UserViewModel
- * @constructor dependency injection
- * @param authenticationTask
- * @param userProfileTask
- * @param changePasswordTask
- * @param userEntityMapper
+ * @constructor dependencies
+ * @property authenticationTask
+ * @property userProfileTask
+ * @property changePasswordTask
+ * @property userEntityMapper
  */
 class UserViewModel @Inject constructor(
     private val authenticationTask: UserAuthenticationTask,
@@ -35,9 +35,10 @@ class UserViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     /**
-     * authenticateUser
-     * @param username
-     * @param password
+     * Authorize user with provided credentials
+     *
+     * @param username string input of username
+     * @param password string input of user password
      * @return LiveData<Resource<User>> return user live data resource wrapper
      */
     fun authenticateUser(username: String, password: String): LiveData<Resource<User>> {
@@ -62,6 +63,12 @@ class UserViewModel @Inject constructor(
             .toLiveData()
     }
 
+    /**
+     * Retrieve user profile in live data wrapper
+     *
+     * @param identifier user id
+     * @return live data of user profile
+     */
     fun getUserProfile(identifier: Int): LiveData<Resource<UserProfile>> {
         return userProfileTask.buildUseCase(identifier)
             .map {
@@ -80,6 +87,13 @@ class UserViewModel @Inject constructor(
             .toLiveData()
     }
 
+    /**
+     * Request user password change
+     *
+     * @param identifier user id
+     * @param oldPass current password
+     * @param newPass new password
+     */
     fun changeUserPassword(identifier: Int, oldPass: String, newPass: String) {
         disposable.add(
             changePasswordTask.buildUseCase(
