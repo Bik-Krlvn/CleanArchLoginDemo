@@ -6,11 +6,11 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 
 /**
- * RemoteRepository
+ * RemoteDataSource
  * @author Kelvin Birikorang
  * @desc Retrieve remote data
  */
-interface RemoteRepository {
+interface RemoteDataSource {
 
     //region User
     /**

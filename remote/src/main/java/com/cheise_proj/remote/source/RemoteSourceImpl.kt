@@ -2,11 +2,10 @@ package com.cheise_proj.remote.source
 
 import com.cheise_proj.data.model.UserData
 import com.cheise_proj.data.model.UserProfileData
-import com.cheise_proj.data.repository.RemoteRepository
+import com.cheise_proj.data.repository.RemoteDataSource
 import com.cheise_proj.remote.api.ApiService
 import com.cheise_proj.remote.mapper.user.UserDataRemoteMapper
 import com.cheise_proj.remote.mapper.user.UserProfileDataRemoteMapper
-import com.cheise_proj.remote.model.user.UserChangePasswordResponse
 import io.reactivex.Completable
 import io.reactivex.Observable
 import timber.log.Timber
@@ -24,7 +23,7 @@ class RemoteSourceImpl @Inject constructor(
     private val apiService: ApiService,
     private val userDataRemoteMapper: UserDataRemoteMapper,
     private val userProfileDataRemoteMapper: UserProfileDataRemoteMapper
-) : RemoteRepository {
+) : RemoteDataSource {
     /**
      * retrieve userData from remote
      *

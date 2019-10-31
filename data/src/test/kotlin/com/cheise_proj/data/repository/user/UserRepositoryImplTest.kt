@@ -2,8 +2,8 @@ package com.cheise_proj.data.repository.user
 
 import com.cheise_proj.data.mapper.user.UserEntityDataMapper
 import com.cheise_proj.data.mapper.user.UserProfileEntityDataMapper
-import com.cheise_proj.data.repository.LocalRepository
-import com.cheise_proj.data.repository.RemoteRepository
+import com.cheise_proj.data.repository.LocalDataSource
+import com.cheise_proj.data.repository.RemoteDataSource
 import com.cheise_proj.data.utils.UserDataGenerator
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -20,9 +20,9 @@ import org.mockito.MockitoAnnotations
 class UserRepositoryImplTest {
     private lateinit var userRepositoryImpl: UserRepositoryImpl
     @Mock
-    private lateinit var localRepository: LocalRepository
+    private lateinit var localDataSource: LocalDataSource
     @Mock
-    private lateinit var remoteRepository: RemoteRepository
+    private lateinit var remoteDataSource: RemoteDataSource
 
     private val userData = UserDataGenerator.generateUserData()
     private val userDataMapper = UserEntityDataMapper()
@@ -33,7 +33,7 @@ class UserRepositoryImplTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         userRepositoryImpl = UserRepositoryImpl(
-            localRepository, remoteRepository,
+            localDataSource, remoteDataSource,
             userDataMapper, userProfileDataMapper
         )
     }
@@ -41,14 +41,14 @@ class UserRepositoryImplTest {
     @Test
     fun `Authenticate user remote and local success`() {
         Mockito.`when`(
-            remoteRepository.fetchUserDataWithCredentials(
+            remoteDataSource.fetchUserDataWithCredentials(
                 userData.username,
                 userData.password
             )
         )
             .thenReturn(Observable.just(userData))
         Mockito.`when`(
-            localRepository.getUserDataWithCredentials(
+            localDataSource.getUserDataWithCredentials(
                 userData.username,
                 userData.password
             )
@@ -61,18 +61,18 @@ class UserRepositoryImplTest {
             .assertValueCount(2)
             .assertValues(userDataMapper.from(userData), userDataMapper.from(userData))
             .assertComplete()
-        Mockito.verify(remoteRepository, times(1))
+        Mockito.verify(remoteDataSource, times(1))
             .fetchUserDataWithCredentials(userData.username, userData.password)
-        Mockito.verify(localRepository, times(1))
+        Mockito.verify(localDataSource, times(1))
             .getUserDataWithCredentials(userData.username, userData.password)
     }
 
     @Test
     fun `Get user profile remote and save local success`() {
-        Mockito.`when`(remoteRepository.fetchUserProfile(userData.id))
+        Mockito.`when`(remoteDataSource.fetchUserProfile(userData.id))
             .thenReturn(Observable.just(userProfileData))
 
-        Mockito.`when`(localRepository.getProfileData(userData.id))
+        Mockito.`when`(localDataSource.getProfileData(userData.id))
             .thenReturn(Observable.just(userProfileData))
 
         userRepositoryImpl.getUserProfile(userData.id).test()
@@ -83,15 +83,15 @@ class UserRepositoryImplTest {
                 userProfileDataMapper.from(userProfileData)
             )
             .assertComplete()
-        Mockito.verify(remoteRepository, times(1)).fetchUserProfile(userData.id)
-        Mockito.verify(localRepository, times(1)).getProfileData(userData.id)
+        Mockito.verify(remoteDataSource, times(1)).fetchUserProfile(userData.id)
+        Mockito.verify(localDataSource, times(1)).getProfileData(userData.id)
     }
 
     @Test
     fun `Update user password remote and local success`() {
         val requestPass = UserDataGenerator.generateChangePassword()
         Mockito.`when`(
-            remoteRepository.requestPasswordUpdate(
+            remoteDataSource.requestPasswordUpdate(
                 requestPass.identifier,
                 requestPass.oldPass,
                 requestPass.newPass
@@ -99,7 +99,7 @@ class UserRepositoryImplTest {
         ).thenReturn(Completable.complete())
 
         Mockito.`when`(
-            localRepository.updateUserPassword(
+            localDataSource.updateUserPassword(
                 requestPass.identifier,
                 requestPass.oldPass,
                 requestPass.newPass
@@ -113,12 +113,12 @@ class UserRepositoryImplTest {
         ).test()
             .assertSubscribed()
 
-        Mockito.verify(remoteRepository, times(1)).requestPasswordUpdate(
+        Mockito.verify(remoteDataSource, times(1)).requestPasswordUpdate(
             requestPass.identifier,
             requestPass.oldPass,
             requestPass.newPass
         )
-        Mockito.verify(localRepository, times(1)).updateUserPassword(
+        Mockito.verify(localDataSource, times(1)).updateUserPassword(
             requestPass.identifier,
             requestPass.oldPass,
             requestPass.newPass

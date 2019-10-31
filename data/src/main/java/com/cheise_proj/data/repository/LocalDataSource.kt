@@ -10,7 +10,7 @@ import io.reactivex.Observable
  * @author Kelvin Birikorang
  * @desc Local persistence
  */
-interface LocalRepository {
+interface LocalDataSource {
 
     //region User actions
     /**
