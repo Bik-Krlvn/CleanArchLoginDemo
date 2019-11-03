@@ -3,6 +3,7 @@ package com.cheise_proj.presentation.mapper.user
 import com.cheise_proj.domain.model.UserEntity
 import com.cheise_proj.presentation.mapper.base.Mapper
 import com.cheise_proj.presentation.model.User
+import javax.inject.Inject
 
 /**
  * User Entity Mapper, responsible of mapping presentation user model to domain
@@ -10,7 +11,7 @@ import com.cheise_proj.presentation.model.User
  * @property UserEntityMapper
  * @author Kelvin Birikorang
  */
-class UserEntityMapper : Mapper<UserEntity, User> {
+class UserEntityMapper @Inject constructor() : Mapper<UserEntity, User> {
     /**
      * Maps presentation module user model to domain
      *

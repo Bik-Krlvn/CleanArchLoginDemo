@@ -69,7 +69,7 @@ class UserViewModel @Inject constructor(
      * @param identifier user id
      * @return live data of user profile
      */
-    fun getUserProfile(identifier: Int): LiveData<Resource<UserProfile>> {
+    fun getUserProfile(identifier: String): LiveData<Resource<UserProfile>> {
         return userProfileTask.buildUseCase(identifier)
             .map {
                 userProfileEntityMapper.to(it)
@@ -94,7 +94,7 @@ class UserViewModel @Inject constructor(
      * @param oldPass current password
      * @param newPass new password
      */
-    fun changeUserPassword(identifier: Int, oldPass: String, newPass: String) {
+    fun changeUserPassword(identifier: String, oldPass: String, newPass: String) {
         disposable.add(
             changePasswordTask.buildUseCase(
                 UserChangePasswordTask.ChangePasswordParams(
