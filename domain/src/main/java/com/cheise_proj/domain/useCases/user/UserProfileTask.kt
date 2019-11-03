@@ -23,7 +23,7 @@ class UserProfileTask @Inject constructor(
     private val userRepository: UserRepository,
     @Background backgroundScheduler: Scheduler,
     @Foreground foregroundScheduler: Scheduler
-) : ObservableUseCase<UserProfileEntity, Int>(backgroundScheduler, foregroundScheduler) {
+) : ObservableUseCase<UserProfileEntity, String>(backgroundScheduler, foregroundScheduler) {
     /**
      * Get userProfileEntity observable wrapper
      *
@@ -31,8 +31,8 @@ class UserProfileTask @Inject constructor(
      * @throws IllegalArgumentException
      * @return userProfileEntity observable wrapper
      */
-    override fun generateObservable(input: Int?): Observable<UserProfileEntity> {
+    override fun generateObservable(input: String?): Observable<UserProfileEntity> {
         requireNotNull(input) { "user identifier can't be null" }
-        return userRepository.getUserProfile(input)
+        return userRepository.getUserProfile(input.trim())
     }
 }

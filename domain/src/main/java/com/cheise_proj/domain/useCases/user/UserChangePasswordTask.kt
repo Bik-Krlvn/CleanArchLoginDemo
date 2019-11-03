@@ -35,7 +35,7 @@ class UserChangePasswordTask @Inject constructor(
      */
     override fun generateCompletable(input: ChangePasswordParams?): Completable {
         requireNotNull(input) { "change password params can't be null" }
-        return userRepository.updateUserPassword(input.identifier, input.oldPass, input.newPass)
+        return userRepository.updateUserPassword(input.identifier.trim(), input.oldPass.trim(), input.newPass.trim())
     }
 
     /**
@@ -45,5 +45,5 @@ class UserChangePasswordTask @Inject constructor(
      * @property oldPass
      * @property newPass
      */
-    data class ChangePasswordParams(val identifier: Int, val oldPass: String, val newPass: String)
+    data class ChangePasswordParams(val identifier: String, val oldPass: String, val newPass: String)
 }

@@ -25,7 +25,7 @@ interface UserRepository {
      * @param identifier type integer i.e. user id
      * @return userProfileEntity observable wrapper
      */
-    fun getUserProfile(identifier: Int): Observable<UserProfileEntity>
+    fun getUserProfile(identifier: String): Observable<UserProfileEntity>
 
     /**
      * Update a user password
@@ -35,5 +35,5 @@ interface UserRepository {
      * @param newPass
      * @return completable
      */
-    fun updateUserPassword(identifier: Int, oldPass: String, newPass: String): Completable
+    fun updateUserPassword(identifier: String, oldPass: String, newPass: String): Completable
 }

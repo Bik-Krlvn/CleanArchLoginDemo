@@ -8,7 +8,7 @@ class UserDataGenerator {
     companion object {
         fun generateProfile(): UserProfileEntity {
             return UserProfileEntity(
-                1,
+                "1",
                 "test username",
                 "test email",
                 "test name",
@@ -18,7 +18,7 @@ class UserDataGenerator {
 
         fun generateUserData(): UserEntity {
             return UserEntity(
-                1,
+                "1",
                 "test username",
                 "test email",
                 "test password"
@@ -26,7 +26,7 @@ class UserDataGenerator {
         }
 
         fun generateChangePassword():UserChangePasswordTask.ChangePasswordParams{
-            return UserChangePasswordTask.ChangePasswordParams(1,"test password","test new password")
+            return UserChangePasswordTask.ChangePasswordParams("1","test password","test new password")
         }
     }
 }
