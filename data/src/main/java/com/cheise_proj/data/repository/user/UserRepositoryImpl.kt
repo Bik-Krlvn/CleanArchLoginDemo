@@ -10,6 +10,8 @@ import com.cheise_proj.domain.repository.UserRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.functions.Function
+import java.util.logging.Level
+import java.util.logging.Logger
 import javax.inject.Inject
 
 /**
@@ -65,10 +67,28 @@ class UserRepositoryImpl @Inject constructor(
         identifier: String,
         oldPass: String,
         newPass: String
-    ): Completable {
+    ): Observable<Int> {
         return remoteDataSource.requestPasswordUpdate(identifier, oldPass, newPass)
-            .concatWith {
-                localDataSource.updateUserPassword(identifier, oldPass, newPass)
+            .map {
+                Logger.getLogger("updateUserPassword").log(Level.INFO, "remote status: $it")
+                return@map it
             }
+            .concatWith(
+                localDataSource.updateUserPassword(
+                    identifier,
+                    oldPass,
+                    newPass
+                )
+                    .toObservable()
+            )
+            .onErrorResumeNext(
+                Function {
+                    localDataSource.updateUserPassword(
+                        identifier,
+                        oldPass,
+                        newPass
+                    ).toObservable()
+                }
+            )
     }
 }

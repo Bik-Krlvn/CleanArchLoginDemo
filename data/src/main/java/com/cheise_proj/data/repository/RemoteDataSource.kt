@@ -33,8 +33,8 @@ interface RemoteDataSource {
      * @param identifier
      * @param oldPass
      * @param newPass
-     * @return Completable returns rx completable
+     * @return Observable type integer
      */
-    fun requestPasswordUpdate(identifier: String, oldPass: String, newPass: String): Completable
+    fun requestPasswordUpdate(identifier: String, oldPass: String, newPass: String): Observable<Int>
     //endregion
 }

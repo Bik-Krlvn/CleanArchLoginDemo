@@ -5,7 +5,6 @@ import com.cheise_proj.local.db.dao.UserDao
 import com.cheise_proj.local.mapper.user.UserDataLocalMapper
 import com.cheise_proj.local.mapper.user.UserProfileDataLocalMapper
 import com.cheise_proj.local.utils.UserLocalDataGenerator
-import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Rule
@@ -98,14 +97,19 @@ class LocalDataSourceImplTest {
 
     @Test
     fun `Update user password locally`() {
+        val updateRow = 1
         val input = UserLocalDataGenerator.generateChangePassword()
         Mockito.`when`(userDao.updateUserPassword(input.identifier, input.oldPass, input.newPass))
             .thenReturn(
-                Completable.complete()
+                Single.just(updateRow)
             )
         localDataSourceImpl.updateUserPassword(input.identifier, input.oldPass, input.newPass)
             .test()
             .assertSubscribed()
+            .assertValueCount(1)
+            .assertValue {
+                it == updateRow
+            }
             .assertComplete()
     }
 }

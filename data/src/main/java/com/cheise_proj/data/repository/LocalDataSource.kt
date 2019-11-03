@@ -3,6 +3,7 @@ package com.cheise_proj.data.repository
 import com.cheise_proj.data.model.UserData
 import com.cheise_proj.data.model.UserProfileData
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 
 /**
@@ -53,8 +54,8 @@ interface LocalDataSource {
      * @param identifier
      * @param oldPass
      * @param newPass
-     * @return Completable
+     * @return single type integer
      */
-    fun updateUserPassword(identifier: String, oldPass: String, newPass: String): Completable
+    fun updateUserPassword(identifier: String, oldPass: String, newPass: String): Single<Int>
     //endregion
 }

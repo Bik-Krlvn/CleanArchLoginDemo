@@ -75,6 +75,6 @@ interface UserDao {
      * @return completable
      */
     @Query("UPDATE users SET password = :newPass WHERE id = :identifier AND password = :oldPass")
-    fun updateUserPassword(identifier: String, oldPass: String, newPass: String): Completable
+    fun updateUserPassword(identifier: String, oldPass: String, newPass: String): Single<Int>
 
 }

@@ -6,7 +6,6 @@ import com.cheise_proj.data.repository.LocalDataSource
 import com.cheise_proj.local.db.dao.UserDao
 import com.cheise_proj.local.mapper.user.UserDataLocalMapper
 import com.cheise_proj.local.mapper.user.UserProfileDataLocalMapper
-import io.reactivex.Completable
 import io.reactivex.Single
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -92,13 +91,13 @@ class LocalDataSourceImpl @Inject constructor(
      * @param identifier
      * @param oldPass
      * @param newPass
-     * @return completable
+     * @return single type integer
      */
     override fun updateUserPassword(
         identifier: String,
         oldPass: String,
         newPass: String
-    ): Completable {
+    ): Single<Int> {
         return userDao.updateUserPassword(identifier, oldPass, newPass)
     }
 

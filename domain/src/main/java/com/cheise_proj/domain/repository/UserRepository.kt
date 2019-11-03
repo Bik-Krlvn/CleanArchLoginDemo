@@ -35,5 +35,5 @@ interface UserRepository {
      * @param newPass
      * @return completable
      */
-    fun updateUserPassword(identifier: String, oldPass: String, newPass: String): Completable
+    fun updateUserPassword(identifier: String, oldPass: String, newPass: String): Observable<Int>
 }

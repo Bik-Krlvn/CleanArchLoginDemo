@@ -65,17 +65,18 @@ class RemoteDataSourceImpl @Inject constructor(
      * @param identifier type integer i.e. user id
      * @param oldPass type string input current password
      * @param newPass type string input new password
-     * @return completable
+     * @return observable type integer
      */
     override fun requestPasswordUpdate(
         identifier: String,
         oldPass: String,
         newPass: String
-    ): Completable {
-        val observable = apiService.requestUserChangePassword(identifier, oldPass, newPass)
+    ): Observable<Int> {
+        return apiService.requestUserChangePassword(identifier, oldPass, newPass)
             .map {
                 println("remote change-password status: ${it.status} message: ${it.message}")
+                if (it.status == 200) return@map it.status
+                return@map 0
             }
-        return Completable.fromObservable(observable)
     }
 }

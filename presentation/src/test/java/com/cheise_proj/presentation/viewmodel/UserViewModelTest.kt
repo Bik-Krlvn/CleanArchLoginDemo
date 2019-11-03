@@ -9,7 +9,6 @@ import com.cheise_proj.presentation.mapper.user.UserEntityMapper
 import com.cheise_proj.presentation.mapper.user.UserProfileEntityMapper
 import com.cheise_proj.presentation.model.Status
 import com.cheise_proj.presentation.utils.UserDataGenerator
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import org.junit.Assert.assertTrue
@@ -59,7 +58,9 @@ class UserViewModelTest {
         Mockito.`when`(userRepository.authenticateUser(userData.username, userData.password))
             .thenReturn(Observable.just(userEntityMapper.from(userData)))
         val authLiveData = userViewModel.authenticateUser(userData.username, userData.password)
+
         authLiveData.observeForever { }
+
         assertTrue(
             authLiveData.value?.status == Status.SUCCESS &&
                     authLiveData.value?.data == userData
@@ -108,7 +109,8 @@ class UserViewModelTest {
     }
 
     @Test
-    fun `Change user password`() {
+    fun `Change user password success`() {
+        val updateRow = 1
         val reqPass = UserDataGenerator.generateChangePassword()
         Mockito.`when`(
             userRepository.updateUserPassword(
@@ -116,12 +118,47 @@ class UserViewModelTest {
                 reqPass.oldPass,
                 reqPass.newPass
             )
-        ).thenReturn(Completable.complete())
+        ).thenReturn(Observable.just(updateRow))
 
-        userViewModel.changeUserPassword(
+        val reqChange = userViewModel.changeUserPassword(
             reqPass.identifier,
             reqPass.oldPass,
             reqPass.newPass
+        )
+        reqChange.observeForever { }
+        assertTrue(
+            reqChange.value?.status == Status.SUCCESS && reqChange.value?.data == updateRow
+        )
+
+        Mockito.verify(userRepository, times(1))
+            .updateUserPassword(
+                reqPass.identifier,
+                reqPass.oldPass,
+                reqPass.newPass
+            )
+    }
+
+    @Test
+    fun `Change user password failed`() {
+        val errorMsg = "An error occurred"
+        val updateRow = 1
+        val reqPass = UserDataGenerator.generateChangePassword()
+        Mockito.`when`(
+            userRepository.updateUserPassword(
+                reqPass.identifier,
+                reqPass.oldPass,
+                reqPass.newPass
+            )
+        ).thenReturn(Observable.error(Throwable(errorMsg)))
+
+        val reqChange = userViewModel.changeUserPassword(
+            reqPass.identifier,
+            reqPass.oldPass,
+            reqPass.newPass
+        )
+        reqChange.observeForever { }
+        assertTrue(
+            reqChange.value?.status == Status.ERROR && reqChange.value?.data != updateRow
         )
 
         Mockito.verify(userRepository, times(1))

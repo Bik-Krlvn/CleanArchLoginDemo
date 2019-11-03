@@ -3,6 +3,7 @@ package com.cheise_proj.domain.useCases.user
 import com.cheise_proj.domain.repository.UserRepository
 import com.cheise_proj.domain.utils.UserDataGenerator
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import org.junit.Before
 import org.junit.Test
@@ -27,6 +28,7 @@ class UserChangePasswordTaskTest {
 
     @Test
     fun `update user password success`() {
+        val updateRow = 1
         val genData = UserDataGenerator.generateChangePassword()
         Mockito.`when`(
             userRepository.updateUserPassword(
@@ -35,7 +37,7 @@ class UserChangePasswordTaskTest {
                 genData.newPass
             )
         ).thenReturn(
-            Completable.complete()
+            Observable.just(updateRow)
         )
 
         userChangePasswordTask.buildUseCase(
@@ -46,6 +48,10 @@ class UserChangePasswordTaskTest {
             )
         ).test()
             .assertSubscribed()
+            .assertValueCount(1)
+            .assertValue {
+                it == updateRow
+            }
             .assertComplete()
     }
 
@@ -60,7 +66,7 @@ class UserChangePasswordTaskTest {
                 genData.newPass
             )
         ).thenReturn(
-            Completable.error(Throwable(errorMsg))
+            Observable.error(Throwable(errorMsg))
         )
 
         userChangePasswordTask.buildUseCase(

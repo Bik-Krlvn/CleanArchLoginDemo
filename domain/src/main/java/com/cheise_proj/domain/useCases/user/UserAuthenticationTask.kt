@@ -36,7 +36,7 @@ class UserAuthenticationTask @Inject constructor(
      */
     override fun generateObservable(input: AuthParams?): Observable<UserEntity> {
         requireNotNull(input) { "auth params can't be null" }
-        return userRepository.authenticateUser(input.username, input.password)
+        return userRepository.authenticateUser(input.username.trim(), input.password.trim())
     }
 
     /**

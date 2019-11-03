@@ -93,18 +93,32 @@ class UserViewModel @Inject constructor(
      * @param identifier user id
      * @param oldPass current password
      * @param newPass new password
+     * @return live data type integer
      */
-    fun changeUserPassword(identifier: String, oldPass: String, newPass: String) {
-        disposable.add(
-            changePasswordTask.buildUseCase(
-                UserChangePasswordTask.ChangePasswordParams(
-                    identifier,
-                    oldPass,
-                    newPass
-                )
+    fun changeUserPassword(
+        identifier: String,
+        oldPass: String,
+        newPass: String
+    ): LiveData<Resource<Int>> {
+        return changePasswordTask.buildUseCase(
+            UserChangePasswordTask.ChangePasswordParams(
+                identifier,
+                oldPass,
+                newPass
             )
-                .onErrorComplete()
-                .subscribe()
         )
+            .map {
+                Resource.success(it)
+            }
+            .startWith(Resource.loading())
+            .onErrorResumeNext(
+                Function {
+                    Observable.just(Resource.error(it.localizedMessage))
+                }
+            )
+            .toFlowable(BackpressureStrategy.LATEST)
+            .toLiveData()
+
+
     }
 }
