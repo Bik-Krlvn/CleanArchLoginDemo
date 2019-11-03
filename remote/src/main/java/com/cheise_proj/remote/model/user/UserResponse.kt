@@ -1,7 +1,10 @@
 package com.cheise_proj.remote.model.user
 
+import com.google.gson.annotations.SerializedName
+
 data class UserResponse(
     val status:Int,
     val message:String,
-    val userNetwork: UserNetwork?
+    @SerializedName("data")
+    val userNetwork: UserNetwork
 )

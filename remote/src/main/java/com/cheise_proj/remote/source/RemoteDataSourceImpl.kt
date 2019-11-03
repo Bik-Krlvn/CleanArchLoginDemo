@@ -8,8 +8,8 @@ import com.cheise_proj.remote.mapper.user.UserDataRemoteMapper
 import com.cheise_proj.remote.mapper.user.UserProfileDataRemoteMapper
 import io.reactivex.Completable
 import io.reactivex.Observable
-import timber.log.Timber
-import timber.log.info
+import java.util.logging.Level
+import java.util.logging.Logger
 import javax.inject.Inject
 
 /**
@@ -19,7 +19,7 @@ import javax.inject.Inject
  * @property userDataRemoteMapper
  * @property userProfileDataRemoteMapper
  */
-class RemoteSourceImpl @Inject constructor(
+class RemoteDataSourceImpl @Inject constructor(
     private val apiService: ApiService,
     private val userDataRemoteMapper: UserDataRemoteMapper,
     private val userProfileDataRemoteMapper: UserProfileDataRemoteMapper
@@ -38,8 +38,8 @@ class RemoteSourceImpl @Inject constructor(
 
         return apiService.requestUserAuthentication(username, password)
             .map {
-                Timber.info { "remote auth status response: ${it.status} message: ${it.message}" }
-                it.userNetwork?.let { it1 -> userDataRemoteMapper.from(it1) }
+                println("remote auth status response: ${it.status} message: ${it.message}")
+                userDataRemoteMapper.from(it.userNetwork)
             }
     }
 
@@ -49,10 +49,12 @@ class RemoteSourceImpl @Inject constructor(
      * @param identifier type int i.e. user id
      * @return userProfileData from remote
      */
-    override fun fetchUserProfile(identifier: Int): Observable<UserProfileData> {
+    override fun fetchUserProfile(identifier: String): Observable<UserProfileData> {
         return apiService.fetchUserProfile(identifier)
             .map {
-                Timber.info { "remote profile status response: ${it.status}" }
+                Logger.getLogger("fetchUserProfile")
+                    .log(Level.INFO, "remote profile status response: ${it.status}")
+//                println("remote profile status response: ${it.status}" )
                 it.profileNetwork?.let { it1 -> userProfileDataRemoteMapper.from(it1) }
             }
     }
@@ -66,13 +68,13 @@ class RemoteSourceImpl @Inject constructor(
      * @return completable
      */
     override fun requestPasswordUpdate(
-        identifier: Int,
+        identifier: String,
         oldPass: String,
         newPass: String
     ): Completable {
         val observable = apiService.requestUserChangePassword(identifier, oldPass, newPass)
             .map {
-                Timber.info { "remote change-password status: ${it.status} message: ${it.message}" }
+                println("remote change-password status: ${it.status} message: ${it.message}")
             }
         return Completable.fromObservable(observable)
     }

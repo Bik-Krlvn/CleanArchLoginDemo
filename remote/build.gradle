@@ -12,8 +12,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofit_version"
-    //Timber
-    implementation "com.jakewharton.timber:timber-jdk:$timber_jdk_version"
+
     //inject
     implementation "javax.inject:javax.inject:$rootProject.javaxInjectVersion"
 

@@ -15,8 +15,8 @@ import org.mockito.Mockito.times
 import org.mockito.MockitoAnnotations
 
 @RunWith(JUnit4::class)
-class RemoteSourceImplTest {
-    private lateinit var remoteSourceImpl: RemoteSourceImpl
+class RemoteDataSourceImplTest {
+    private lateinit var remoteDataSourceImpl: RemoteDataSourceImpl
     @Mock
     private lateinit var apiService: ApiService
     private val userDataRemoteMapper = UserDataRemoteMapper()
@@ -25,8 +25,8 @@ class RemoteSourceImplTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        remoteSourceImpl =
-            RemoteSourceImpl(apiService, userDataRemoteMapper, userProfileDataRemoteMapper)
+        remoteDataSourceImpl =
+            RemoteDataSourceImpl(apiService, userDataRemoteMapper, userProfileDataRemoteMapper)
     }
 
     @Test
@@ -34,25 +34,25 @@ class RemoteSourceImplTest {
         val res = UserRemoteDataGenerator.generateUserDataResponse()
         Mockito.`when`(
             apiService.requestUserAuthentication(
-                res.userNetwork?.username!!,
-                res.userNetwork?.password!!
+                res.userNetwork.username,
+                res.userNetwork.password
             )
         )
             .thenReturn(Observable.just(res))
 
-        remoteSourceImpl.fetchUserDataWithCredentials(
-            res.userNetwork?.username!!,
-            res.userNetwork?.password!!
+        remoteDataSourceImpl.fetchUserDataWithCredentials(
+            res.userNetwork.username,
+            res.userNetwork.password
         ).test()
             .assertSubscribed()
             .assertValueCount(1)
             .assertValue {
-                it == userDataRemoteMapper.from(res.userNetwork!!)
+                it == userDataRemoteMapper.from(res.userNetwork)
             }
             .assertComplete()
         Mockito.verify(apiService, times(1)).requestUserAuthentication(
-            res.userNetwork?.username!!,
-            res.userNetwork?.password!!
+            res.userNetwork.username,
+            res.userNetwork.password
         )
 
     }
@@ -62,7 +62,7 @@ class RemoteSourceImplTest {
         val res = UserRemoteDataGenerator.generateProfileDataResponse()
         Mockito.`when`(apiService.fetchUserProfile(res.profileNetwork?.id!!))
             .thenReturn(Observable.just(res))
-        remoteSourceImpl.fetchUserProfile(res.profileNetwork?.id!!).test()
+        remoteDataSourceImpl.fetchUserProfile(res.profileNetwork?.id!!).test()
             .assertSubscribed()
             .assertValueCount(1)
             .assertValue {
@@ -86,7 +86,7 @@ class RemoteSourceImplTest {
             Observable.just(res)
         )
 
-        remoteSourceImpl.requestPasswordUpdate(req.identifier, req.oldPass, req.newPass).test()
+        remoteDataSourceImpl.requestPasswordUpdate(req.identifier, req.oldPass, req.newPass).test()
             .assertSubscribed()
             .assertComplete()
         Mockito.verify(apiService, times(1))

@@ -33,9 +33,9 @@ interface ApiService {
      * @param identifier type int i.e. user id
      * @return observable UserProfileResponse wrapper
      */
-    @GET("profile/{id}")
+    @GET("users/{id}/profile")
     fun fetchUserProfile(
-        @Path("id") identifier: Int
+        @Path("id") identifier: String
     ): Observable<UserProfileResponse>
 
     /**
@@ -47,9 +47,9 @@ interface ApiService {
      * @return observable UserChangePasswordResponse wrapper
      */
     @FormUrlEncoded
-    @POST("user/change-password")
+    @POST("users/change-password")
     fun requestUserChangePassword(
-        @Field("id") identifier: Int,
+        @Field("id") identifier: String,
         @Field("oldPass") oldPass: String,
         @Field("newPass") newPass: String
     ): Observable<UserChangePasswordResponse>

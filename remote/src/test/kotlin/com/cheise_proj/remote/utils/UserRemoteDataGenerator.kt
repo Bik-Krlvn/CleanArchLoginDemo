@@ -9,7 +9,7 @@ class UserRemoteDataGenerator {
                 status = 200,
                 message = "available profile",
                 profileNetwork = UserProfileNetwork(
-                    1,
+                    "1",
                     "test username",
                     "test email",
                     "test name",
@@ -23,7 +23,7 @@ class UserRemoteDataGenerator {
                 status = 200,
                 message = "login successful",
                 userNetwork = UserNetwork(
-                    1,
+                    "1",
                     "test username",
                     "test email",
                     "test password"
@@ -39,10 +39,10 @@ class UserRemoteDataGenerator {
         }
 
         fun generateChangePassword(): ChangePasswordParams {
-            return ChangePasswordParams(1, "test password", "test new password")
+            return ChangePasswordParams("1", "test password", "test new password")
         }
     }
 
-    data class ChangePasswordParams(val identifier: Int, val oldPass: String, val newPass: String)
+    data class ChangePasswordParams(val identifier: String, val oldPass: String, val newPass: String)
 
 }
