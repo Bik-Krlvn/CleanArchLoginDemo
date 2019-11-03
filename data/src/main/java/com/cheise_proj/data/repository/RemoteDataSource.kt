@@ -26,7 +26,7 @@ interface RemoteDataSource {
      * @param identifier provide identifier (i.e. user id) for user
      * @return Observable<UserProfileData> returns rx observable
      */
-    fun fetchUserProfile(identifier: Int): Observable<UserProfileData>
+    fun fetchUserProfile(identifier: String): Observable<UserProfileData>
 
     /**
      * requestPasswordUpdate
@@ -35,6 +35,6 @@ interface RemoteDataSource {
      * @param newPass
      * @return Completable returns rx completable
      */
-    fun requestPasswordUpdate(identifier: Int, oldPass: String, newPass: String): Completable
+    fun requestPasswordUpdate(identifier: String, oldPass: String, newPass: String): Completable
     //endregion
 }

@@ -7,6 +7,7 @@ import com.cheise_proj.data.repository.RemoteDataSource
 import com.cheise_proj.data.utils.UserDataGenerator
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -53,13 +54,15 @@ class UserRepositoryImplTest {
                 userData.password
             )
         )
-            .thenReturn(Observable.just(userData))
+            .thenReturn(Single.just(userData))
 
         userRepositoryImpl.authenticateUser(userData.username, userData.password)
             .test()
             .assertSubscribed()
-            .assertValueCount(2)
-            .assertValues(userDataMapper.from(userData), userDataMapper.from(userData))
+            .assertValueCount(1)
+            .assertValue {
+                it == userDataMapper.from(userData)
+            }
             .assertComplete()
         Mockito.verify(remoteDataSource, times(1))
             .fetchUserDataWithCredentials(userData.username, userData.password)
@@ -73,15 +76,14 @@ class UserRepositoryImplTest {
             .thenReturn(Observable.just(userProfileData))
 
         Mockito.`when`(localDataSource.getProfileData(userData.id))
-            .thenReturn(Observable.just(userProfileData))
+            .thenReturn(Single.just(userProfileData))
 
         userRepositoryImpl.getUserProfile(userData.id).test()
             .assertSubscribed()
-            .assertValueCount(2)
-            .assertValues(
-                userProfileDataMapper.from(userProfileData),
-                userProfileDataMapper.from(userProfileData)
-            )
+            .assertValueCount(1)
+            .assertValue {
+                it == userProfileDataMapper.from(userProfileData)
+            }
             .assertComplete()
         Mockito.verify(remoteDataSource, times(1)).fetchUserProfile(userData.id)
         Mockito.verify(localDataSource, times(1)).getProfileData(userData.id)

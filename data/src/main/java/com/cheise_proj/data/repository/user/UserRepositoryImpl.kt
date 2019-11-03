@@ -9,6 +9,7 @@ import com.cheise_proj.domain.model.UserProfileEntity
 import com.cheise_proj.domain.repository.UserRepository
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.functions.Function
 import javax.inject.Inject
 
 /**
@@ -28,36 +29,40 @@ class UserRepositoryImpl @Inject constructor(
     private val userProfileEntityDataMapper: UserProfileEntityDataMapper
 ) : UserRepository {
     override fun authenticateUser(username: String, password: String): Observable<UserEntity> {
-        val localObservable = localDataSource.getUserDataWithCredentials(username, password)
+        val remoteObservable = remoteDataSource.fetchUserDataWithCredentials(username, password)
             .map {
-                userEntityDataMapper.from(it)
-            }
-        return remoteDataSource.fetchUserDataWithCredentials(username, password)
-            .map {
-                it.password = password
                 localDataSource.saveUserData(it)
                 userEntityDataMapper.from(it)
             }
-            .concatWith(localObservable)
 
+        return localDataSource.getUserDataWithCredentials(username, password)
+            .map { userEntityDataMapper.from(it) }
+            .toObservable()
+            .onErrorResumeNext(
+                Function {
+                    remoteObservable
+                }
+            )
     }
 
-    override fun getUserProfile(identifier: Int): Observable<UserProfileEntity> {
-        val localObservable = localDataSource.getProfileData(identifier)
-            .map {
-                userProfileEntityDataMapper.from(it)
-            }
-        return remoteDataSource.fetchUserProfile(identifier)
+    override fun getUserProfile(identifier: String): Observable<UserProfileEntity> {
+        val remoteObservable = remoteDataSource.fetchUserProfile(identifier)
             .map {
                 localDataSource.saveUserProfile(it)
                 userProfileEntityDataMapper.from(it)
             }
-            .concatWith(localObservable)
-
+        return localDataSource.getProfileData(identifier)
+            .map {
+                userProfileEntityDataMapper.from(it)
+            }
+            .toObservable()
+            .onErrorResumeNext(
+                Function { remoteObservable }
+            )
     }
 
     override fun updateUserPassword(
-        identifier: Int,
+        identifier: String,
         oldPass: String,
         newPass: String
     ): Completable {

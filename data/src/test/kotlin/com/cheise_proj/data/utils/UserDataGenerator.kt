@@ -7,7 +7,7 @@ class UserDataGenerator {
    companion object{
        fun generateProfile(): UserProfileData {
            return UserProfileData(
-               1,
+               "1",
                "test username",
                "test email",
                "test name",
@@ -17,7 +17,7 @@ class UserDataGenerator {
 
        fun generateUserData(): UserData {
            return UserData(
-               1,
+               "1",
                "test username",
                "test email",
                "test password"
@@ -25,9 +25,9 @@ class UserDataGenerator {
        }
 
        fun generateChangePassword(): ChangePasswordParams {
-           return ChangePasswordParams(1, "test password", "test new password")
+           return ChangePasswordParams("1", "test password", "test new password")
        }
    }
 
-    data class ChangePasswordParams(val identifier: Int, val oldPass: String, val newPass: String)
+    data class ChangePasswordParams(val identifier: String, val oldPass: String, val newPass: String)
 }

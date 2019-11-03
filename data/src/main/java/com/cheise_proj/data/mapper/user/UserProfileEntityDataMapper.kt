@@ -3,8 +3,9 @@ package com.cheise_proj.data.mapper.user
 import com.cheise_proj.data.mapper.base.Mapper
 import com.cheise_proj.data.model.UserProfileData
 import com.cheise_proj.domain.model.UserProfileEntity
+import javax.inject.Inject
 
-class UserProfileEntityDataMapper : Mapper<UserProfileEntity, UserProfileData> {
+class UserProfileEntityDataMapper @Inject constructor() : Mapper<UserProfileEntity, UserProfileData> {
     override fun from(e: UserProfileData): UserProfileEntity {
         return UserProfileEntity(
             id = e.id,

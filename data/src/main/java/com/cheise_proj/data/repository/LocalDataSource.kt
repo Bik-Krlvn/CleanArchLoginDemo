@@ -3,7 +3,7 @@ package com.cheise_proj.data.repository
 import com.cheise_proj.data.model.UserData
 import com.cheise_proj.data.model.UserProfileData
 import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.Single
 
 /**
  * Local Repository
@@ -26,21 +26,21 @@ interface LocalDataSource {
      * @param password
      * @return Observable<UserData>
      */
-    fun getUserDataWithCredentials(username: String, password: String): Observable<UserData>
+    fun getUserDataWithCredentials(username: String, password: String): Single<UserData>
 
     /**
      * getUserDataWithCredentials
      * @param identifier
      * @return Observable<UserData>
      */
-    fun getUserDataWithIdentifier(identifier: Int): Observable<UserData>
+    fun getUserDataWithIdentifier(identifier: String): Single<UserData>
 
     /**
      * getProfileData
      * @param identifier
      * @return Observable<UserProfileData>
      */
-    fun getProfileData(identifier: Int): Observable<UserProfileData>
+    fun getProfileData(identifier: String): Single<UserProfileData>
 
     /**
      * saveUserProfile
@@ -55,6 +55,6 @@ interface LocalDataSource {
      * @param newPass
      * @return Completable
      */
-    fun updateUserPassword(identifier: Int, oldPass: String, newPass: String): Completable
+    fun updateUserPassword(identifier: String, oldPass: String, newPass: String): Completable
     //endregion
 }
